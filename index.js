@@ -1,1 +1,4 @@
-console.log("hello");
+const main = require("./contacts");
+
+main();
+console.log("end");
