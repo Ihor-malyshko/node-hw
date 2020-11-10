@@ -20,5 +20,9 @@
   "homepage": "https://github.com/Ihor-malyshko/node-hw#readme",
   "devDependencies": {
     "nodemon": "^2.0.6"
+  },
+  "dependencies": {
+    "uuidv4": "^6.2.5",
+    "yargs": "^16.1.0"
   }
 }
