@@ -10,6 +10,7 @@ const {
 const {
   createContactSchema,
   updateContactSchema,
+  validateIdSchema,
 } = require("./contacts.schemes");
 
 const router = Router();
@@ -21,12 +22,17 @@ router.post("/", validate(createContactSchema), createContact);
 
 // 2. R - Read
 router.get("/", getContacts);
-router.get("/:id", getContactById);
+router.get("/:id", validate(validateIdSchema, "params"), getContactById);
 
 // // 3. U - Update
-router.put("/:id", validate(updateContactSchema), updateContact);
+router.put(
+  "/:id",
+  validate(validateIdSchema, "params"),
+  validate(updateContactSchema),
+  updateContact
+);
 
 // 4. D - Delete
-router.delete("/:id", deleteContact);
+router.delete("/:id", validate(validateIdSchema, "params"), deleteContact);
 
 exports.contactsRouter = router;
