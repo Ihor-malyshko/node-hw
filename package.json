@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js",
-    "dev": "nodemon index.js"
+    "start": "node start.js",
+    "dev": "nodemon start.js"
   },
   "repository": {
     "type": "git",
@@ -22,7 +22,13 @@
     "nodemon": "^2.0.6"
   },
   "dependencies": {
-    "uuidv4": "^6.2.5",
-    "yargs": "^16.1.0"
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "joi": "^17.3.0",
+    "mongodb": "^3.6.3",
+    "mongoose": "^5.10.14",
+    "morgan": "^1.10.0",
+    "uuidv4": "^6.2.5"
   }
 }
