@@ -8,7 +8,7 @@ const {
 
 exports.createContact = async (req, res, next) => {
   try {
-    const newContact = saveContact(req.body);
+    const newContact = await saveContact(req.body);
 
     return res.status(201).send(newContact);
   } catch (err) {
@@ -16,18 +16,18 @@ exports.createContact = async (req, res, next) => {
   }
 };
 
-exports.getContacts = (req, res, next) => {
+exports.getContacts = async (req, res, next) => {
   try {
-    const contacts = findContacts();
+    const contacts = await findContacts();
     return res.status(200).send(contacts);
   } catch (err) {
     next(err);
   }
 };
 
-exports.getContactById = (req, res, next) => {
+exports.getContactById = async (req, res, next) => {
   try {
-    const contact = findContactById(req.params.id);
+    const contact = await findContactById(req.params.id);
     if (!contact) {
       return res.status(404).send("Contact not found");
     }
@@ -38,16 +38,15 @@ exports.getContactById = (req, res, next) => {
   }
 };
 
-exports.updateContact = (req, res, next) => {
+exports.updateContact = async (req, res, next) => {
   try {
     const { id } = req.params;
 
-    const contact = findContactById(id);
+    const contact = await findContactById(id);
     if (!contact) {
       return res.status(404).send("Contact not found");
     }
-
-    const updatedContact = modifyContactById(contact.id, req.body);
+    const updatedContact = await modifyContactById(contact, req.body);
 
     return res.status(200).send(updatedContact);
   } catch (err) {
@@ -55,16 +54,16 @@ exports.updateContact = (req, res, next) => {
   }
 };
 
-exports.deleteContact = (req, res, next) => {
+exports.deleteContact = async (req, res, next) => {
   try {
     const { id } = req.params;
 
-    const contact = findContactById(id);
+    const contact = await findContactById(id);
     if (!contact) {
       return res.status(404).send("Contact not found");
     }
 
-    removeContactById(contact.id);
+    await removeContactById(contact);
 
     return res.status(204).send();
   } catch (err) {

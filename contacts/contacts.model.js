@@ -3,58 +3,55 @@ const uuid = require("uuid");
 const path = require("path");
 const contactsPath = path.join(__dirname, "../db/contacts.json");
 
-const fs = require("fs");
+const fs = require("fs/promises");
 
-exports.saveContact = (contactParams) => {
-  const contacts = readFile();
+exports.saveContact = async (contactParams) => {
+  await readFile();
   const newContact = {
     id: uuid.v4(),
     ...contactParams,
   };
 
   contacts.push(newContact);
-  writeFile(contacts);
+  await writeFile(contacts);
   return newContact;
 };
 
-exports.findContacts = () => {
-  const contacts = readFile();
+exports.findContacts = async () => {
+  await readFile();
   return contacts;
 };
 
-exports.findContactById = (id) => {
-  const contacts = readFile();
+exports.findContactById = async (id) => {
+  await readFile();
   return contacts.find((contact) => contact.id === id);
 };
 
-exports.modifyContactById = (index, contactParams) => {
-  const contacts = readFile();
-  const contactIndex = index - 1;
+exports.modifyContactById = async (contact, contactParams) => {
+  const contactIndex = contacts.indexOf(contact);
   contacts[contactIndex] = {
     ...contacts[contactIndex],
     ...contactParams,
   };
-  writeFile(contacts);
 
+  await writeFile(contacts);
   return contacts[contactIndex];
 };
 
-exports.removeContactById = (index) => {
-  const contacts = readFile();
-
-  const contactIndex = index - 1;
+exports.removeContactById = async (contact) => {
+  const contactIndex = contacts.indexOf(contact);
   contacts.splice(contactIndex, 1);
-  writeFile(contacts);
+  await writeFile(contacts);
 };
 
-function readFile() {
-  const contactsStr = fs.readFileSync(contactsPath, "utf-8");
-  return JSON.parse(contactsStr);
+async function readFile() {
+  const contactsStr = await fs.readFile(contactsPath, "utf-8");
+  contacts = JSON.parse(contactsStr);
 }
 
-function writeFile(contacts) {
-  const str = JSON.stringify(contacts);
-  fs.writeFileSync(contactsPath, str, (err) => {
+async function writeFile(arr) {
+  const str = JSON.stringify(arr);
+  await fs.writeFile(contactsPath, str, (err) => {
     if (err) throw err;
     console.log("The file has been saved!");
   });
