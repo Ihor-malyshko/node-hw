@@ -1,61 +1,73 @@
-const uuid = require("uuid");
+const mongoose = require("mongoose");
+const { Schema } = mongoose;
 
-const path = require("path");
-const contactsPath = path.join(__dirname, "../db/contacts.json");
+const contactSchema = new Schema({
+  name: { type: String, required: true },
+  email: { type: String, required: true },
+  phone: { type: String, required: true },
+});
 
-const fs = require("fs");
+// collection name => contacts
+exports.ContactModel = mongoose.model("Contact", contactSchema);
 
-exports.saveContact = (contactParams) => {
-  const contacts = readFile();
-  const newContact = {
-    id: uuid.v4(),
-    ...contactParams,
-  };
+// const uuid = require("uuid");
 
-  contacts.push(newContact);
-  writeFile(contacts);
-  return newContact;
-};
+// const path = require("path");
+// const contactsPath = path.join(__dirname, "../db/contacts.json");
 
-exports.findContacts = () => {
-  const contacts = readFile();
-  return contacts;
-};
+// const fs = require("fs");
 
-exports.findContactById = (id) => {
-  const contacts = readFile();
-  return contacts.find((contact) => contact.id === id);
-};
+// exports.saveContact = (contactParams) => {
+//   const contacts = readFile();
+//   const newContact = {
+//     id: uuid.v4(),
+//     ...contactParams,
+//   };
 
-exports.modifyContactById = (index, contactParams) => {
-  const contacts = readFile();
-  const contactIndex = index - 1;
-  contacts[contactIndex] = {
-    ...contacts[contactIndex],
-    ...contactParams,
-  };
-  writeFile(contacts);
+//   contacts.push(newContact);
+//   writeFile(contacts);
+//   return newContact;
+// };
 
-  return contacts[contactIndex];
-};
+// exports.findContacts = () => {
+//   const contacts = readFile();
+//   return contacts;
+// };
 
-exports.removeContactById = (index) => {
-  const contacts = readFile();
+// exports.findContactById = (id) => {
+//   const contacts = readFile();
+//   return contacts.find((contact) => contact.id === id);
+// };
 
-  const contactIndex = index - 1;
-  contacts.splice(contactIndex, 1);
-  writeFile(contacts);
-};
+// exports.modifyContactById = (index, contactParams) => {
+//   const contacts = readFile();
+//   const contactIndex = index - 1;
+//   contacts[contactIndex] = {
+//     ...contacts[contactIndex],
+//     ...contactParams,
+//   };
+//   writeFile(contacts);
 
-function readFile() {
-  const contactsStr = fs.readFileSync(contactsPath, "utf-8");
-  return JSON.parse(contactsStr);
-}
+//   return contacts[contactIndex];
+// };
 
-function writeFile(contacts) {
-  const str = JSON.stringify(contacts);
-  fs.writeFileSync(contactsPath, str, (err) => {
-    if (err) throw err;
-    console.log("The file has been saved!");
-  });
-}
+// exports.removeContactById = (index) => {
+//   const contacts = readFile();
+
+//   const contactIndex = index - 1;
+//   contacts.splice(contactIndex, 1);
+//   writeFile(contacts);
+// };
+
+// function readFile() {
+//   const contactsStr = fs.readFileSync(contactsPath, "utf-8");
+//   return JSON.parse(contactsStr);
+// }
+
+// function writeFile(contacts) {
+//   const str = JSON.stringify(contacts);
+//   fs.writeFileSync(contactsPath, str, (err) => {
+//     if (err) throw err;
+//     console.log("The file has been saved!");
+//   });
+// }
