@@ -5,6 +5,8 @@ const express = require("express");
 const morgan = require("morgan");
 const mongoose = require("mongoose");
 const { contactsRouter } = require("./contacts/contacts.router");
+const { authRouter } = require("./auth/auth.router");
+const { usersRouter } = require("./users/users.router");
 
 exports.CrudServer = class {
   constructor() {
@@ -44,6 +46,8 @@ exports.CrudServer = class {
 
   initRoutes() {
     this.server.use("/contacts", contactsRouter);
+    this.server.use("/auth", authRouter);
+    this.server.use("/users", usersRouter);
   }
 
   initErrorHandling() {
