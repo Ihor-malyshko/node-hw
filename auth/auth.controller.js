@@ -2,6 +2,7 @@ const bcrypt = require("bcryptjs");
 const { Conflict, NotFoung, Forbidden } = require("../helpers/errors");
 const { UserModel } = require("../users/users.model");
 const jwt = require("jsonwebtoken");
+const { serializeUser } = require("../users/users.serializer");
 
 exports.register = async (req, res, next) => {
   try {
@@ -21,11 +22,7 @@ exports.register = async (req, res, next) => {
       password: passwordHash,
     });
 
-    res.status(201).send({
-      id: newUser._id,
-      email,
-      subscription: newUser.subscription,
-    });
+    res.status(201).send(serializeUser(newUser));
   } catch (err) {
     next(err);
   }
@@ -52,11 +49,7 @@ exports.login = async (req, res, next) => {
     await UserModel.findByIdAndUpdate(user._id, { $push: { tokens: token } });
 
     return res.status(200).send({
-      user: {
-        id: user._id,
-        email: user.email,
-        subscription: user.subscription,
-      },
+      user: serializeUser(user),
       token,
     });
   } catch (err) {
