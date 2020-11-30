@@ -2,7 +2,7 @@ const { Router } = require("express");
 const { validate } = require("../helpers/validate.middleware");
 const { register, login, logout } = require("./auth.controller");
 const { registerSchema, loginSchema } = require("./auth.schemes");
-const { authorize } = require("../helpers/authorize.middeleware");
+const { authorize } = require("../helpers/authorize.middleware");
 
 const router = Router();
 

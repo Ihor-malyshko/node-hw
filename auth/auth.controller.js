@@ -3,11 +3,12 @@ const { Conflict, NotFoung, Forbidden } = require("../helpers/errors");
 const { UserModel } = require("../users/users.model");
 const jwt = require("jsonwebtoken");
 const { serializeUser } = require("../users/users.serializer");
+const { AvatarGenerator } = require("random-avatar-generator");
+const { v4: uuidv4 } = require("uuid");
+const { avatartDownloadPromise } = require("../helpers/download");
 
 exports.register = async (req, res, next) => {
   try {
-    //
-
     const { email, password } = req.body;
 
     const existingUser = await UserModel.findOne({ email });
@@ -17,9 +18,19 @@ exports.register = async (req, res, next) => {
 
     const passwordHash = await bcrypt.hash(password, +process.env.SALT_ROUNDS);
 
+    const generator = new AvatarGenerator();
+    generator.generateRandomAvatar();
+    const fileName = `${uuidv4()}.svg`;
+    const downloadURL = generator.generateRandomAvatar(fileName);
+
+    const IMAGE_PATH = `./public/images/${fileName}`;
+
+    const avatarURL = await avatartDownloadPromise(downloadURL, IMAGE_PATH);
+
     const newUser = await UserModel.create({
       email,
       password: passwordHash,
+      avatarURL,
     });
 
     res.status(201).send(serializeUser(newUser));
