@@ -8,8 +8,7 @@ const { contactsRouter } = require("./contacts/contacts.router");
 const { authRouter } = require("./auth/auth.router");
 const { usersRouter } = require("./users/users.router");
 
-const multer = require("multer");
-const IMAGES_PATH = path.join(__dirname, "public/tmp");
+const IMAGES_PATH = path.join(__dirname, "public/images");
 
 exports.CrudServer = class {
   constructor() {
@@ -27,6 +26,7 @@ exports.CrudServer = class {
 
   initServer() {
     this.server = express();
+    this.server.use("/images", express.static(IMAGES_PATH));
   }
 
   async initDatabase() {
@@ -51,7 +51,6 @@ exports.CrudServer = class {
     this.server.use("/contacts", contactsRouter);
     this.server.use("/auth", authRouter);
     this.server.use("/users", usersRouter);
-    this.server.use("/images", express.static(IMAGES_PATH));
   }
 
   initErrorHandling() {

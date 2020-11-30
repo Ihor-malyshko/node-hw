@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const { Unauthorized } = require("../helpers/errors");
+const { Unauthorized } = require("./errors");
 const { UserModel } = require("../users/users.model");
 
 exports.authorize = async (req, res, next) => {
@@ -17,7 +17,6 @@ exports.authorize = async (req, res, next) => {
       _id: payload.userId,
       tokens: token,
     });
-    console.log(payload.userId);
     if (!user) {
       throw new Unauthorized("Token is not valid");
     }
