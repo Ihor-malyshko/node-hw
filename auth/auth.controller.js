@@ -4,6 +4,8 @@ const { UserModel } = require("../users/users.model");
 const jwt = require("jsonwebtoken");
 const { serializeUser } = require("../users/users.serializer");
 const { AvatarGenerator } = require("random-avatar-generator");
+const { v4: uuidv4 } = require("uuid");
+const { avatarDownload } = require("../helpers/download");
 
 exports.register = async (req, res, next) => {
   try {
@@ -17,13 +19,19 @@ exports.register = async (req, res, next) => {
     const passwordHash = await bcrypt.hash(password, +process.env.SALT_ROUNDS);
 
     const generator = new AvatarGenerator();
-    // Simply get a random avatar
     generator.generateRandomAvatar();
-    // Optionally specify a seed for the avatar. e.g. for always getting the same avatar for a user id.
-    // With seed 'avatar', always returns https://avataaars.io/?accessoriesType=Kurt&avatarStyle=Circle&clotheColor=Blue01&clotheType=Hoodie&eyeType=EyeRoll&eyebrowType=RaisedExcitedNatural&facialHairColor=Blonde&facialHairType=BeardMagestic&hairColor=Black&hatColor=White&mouthType=Sad&skinColor=Yellow&topType=ShortHairShortWaved
-    const avatarURL = generator.generateRandomAvatar("avatar");
+    const fileName = `${uuidv4()}.svg`;
+    const downloadURL = generator.generateRandomAvatar(fileName);
 
-    // const avatarURL = `http://localhost:${process.env.PORT}/images/avatars.png`;
+    const IMAGE_PATH = `./public/images/${fileName}`;
+    //todo переписать на промис, чтоб быть увереным что мы закачали аватар
+    avatarDownload(downloadURL, IMAGE_PATH, function () {
+      console.log("download done");
+    });
+    //then
+    const avatarURL = `http://localhost:${process.env.PORT}/images/${fileName}`;
+    //catch next(err)
+
     const newUser = await UserModel.create({
       email,
       password: passwordHash,

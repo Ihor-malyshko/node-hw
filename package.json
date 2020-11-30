@@ -37,6 +37,7 @@
     "morgan": "^1.10.0",
     "multer": "^1.4.2",
     "random-avatar-generator": "^2.0.0",
+    "request": "^2.88.2",
     "uuid": "^3.4.0"
   }
 }
