@@ -5,7 +5,7 @@ const jwt = require("jsonwebtoken");
 const { serializeUser } = require("../users/users.serializer");
 const { AvatarGenerator } = require("random-avatar-generator");
 const { v4: uuidv4 } = require("uuid");
-const { avatarDownload } = require("../helpers/download");
+const { avatartDownloadPromise } = require("../helpers/download");
 
 exports.register = async (req, res, next) => {
   try {
@@ -24,13 +24,8 @@ exports.register = async (req, res, next) => {
     const downloadURL = generator.generateRandomAvatar(fileName);
 
     const IMAGE_PATH = `./public/images/${fileName}`;
-    //todo переписать на промис, чтоб быть увереным что мы закачали аватар
-    avatarDownload(downloadURL, IMAGE_PATH, function () {
-      console.log("download done");
-    });
-    //then
-    const avatarURL = `http://localhost:${process.env.PORT}/images/${fileName}`;
-    //catch next(err)
+
+    const avatarURL = await avatartDownloadPromise(downloadURL, IMAGE_PATH);
 
     const newUser = await UserModel.create({
       email,

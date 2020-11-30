@@ -1,11 +1,15 @@
 const fs = require("fs");
-const request = require("request");
+const axios = require("axios");
 
-exports.avatarDownload = (uri, filename, callback) => {
-  request.head(uri, function (err, res, body) {
-    console.log("content-type:", res.headers["content-type"]);
-    console.log("content-length:", res.headers["content-length"]);
-
-    request(uri).pipe(fs.createWriteStream(filename)).on("close", callback);
-  });
+exports.avatartDownloadPromise = async (uri, filename) => {
+  return axios({
+    method: "get",
+    url: uri,
+    responseType: "stream",
+  })
+    .then((res) => {
+      res.data.pipe(fs.createWriteStream(filename));
+      return filename.replace("/public", "");
+    })
+    .catch(() => `http://localhost:${process.env.PORT}/images/defAvatars.svg`);
 };
