@@ -6,6 +6,7 @@ const { serializeUser } = require("../users/users.serializer");
 const { AvatarGenerator } = require("random-avatar-generator");
 const { v4: uuidv4 } = require("uuid");
 const { avatartDownloadPromise } = require("../helpers/download");
+const { sendVerificationEmail } = require("../helpers/mailing");
 
 exports.register = async (req, res, next) => {
   try {
@@ -31,9 +32,30 @@ exports.register = async (req, res, next) => {
       email,
       password: passwordHash,
       avatarURL,
+      verificationToken: uuidv4(),
     });
 
+    await sendVerificationEmail(newUser);
+
     res.status(201).send(serializeUser(newUser));
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.verifyUser = async (req, res, next) => {
+  try {
+    const { verificationToken } = req.params;
+    // console.log("verifyUser", verificationToken);
+
+    const user = await UserModel.findOne({ verificationToken });
+    if (!user) {
+      throw new NotFound("User with such verification token not found");
+    }
+
+    await UserModel.updateOne({ _id: user._id }, { verificationToken: null });
+
+    return res.status(200).send("Your email successfully verified");
   } catch (err) {
     next(err);
   }
@@ -51,6 +73,10 @@ exports.login = async (req, res, next) => {
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
       throw new Forbidden("Password in not correct");
+    }
+
+    if (user.verificationToken) {
+      throw new Forbidden("Verify your e-mail");
     }
 
     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
