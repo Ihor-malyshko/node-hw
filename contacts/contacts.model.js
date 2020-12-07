@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const { Schema } = mongoose;
+const { Schema, model } = mongoose;
 
 const contactSchema = new Schema({
   name: { type: String, required: true },
@@ -8,4 +8,4 @@ const contactSchema = new Schema({
 });
 
 // collection name => contacts
-exports.ContactModel = mongoose.model("Contact", contactSchema);
+exports.ContactModel = model("Contact", contactSchema);

@@ -10,12 +10,14 @@ exports.sendVerificationEmail = async (user) => {
   const msg = {
     to: user.email, // Change to your recipient
     from: process.env.SGMAIL_FROM, // Change to your verified sender
-    subject: "Email verification",
+    subject: "Рассылка новостей",
     // text: "and easy to do anywhere, even with Node.js",
-    html: `<p>
-      Hello ${user.username}! Please verify your email by following next link.
-      <a href=${verificationLink}>verification link</a>
-      </p>`,
+    html: `<p>Доброго времени суток.</p>
+    <p>Это шаблонное письмо для оповещения наших партнеров о новостях компании)), прайс отправить</p>
+    <p></p>
+    <p>Теперь я умею такое делать. Массовая рассылка писем, ограничение 100 писем в день. Если больше платно.</p>
+    <p>Можно еще картинку вставить, файл прикрепить ну и многое другое</p>
+    <p><a href=http://technocont.com/>Наш сайт</a></p>`,
   };
 
   await sgMail
